@@ -11,16 +11,23 @@ const gameBoard = (() => {
 
   const placeToken = (row, col, player) => {
     const availableCells = board.filter((row) =>
-      row.filter((cell) => cell.getValue !== null)
+      row.filter((cell) => cell.getValue() !== null)
     );
-    if (availableCells.size() === 0) return;
+    if (availableCells.length === 0 || board[row][col].getValue() !== null)
+      return;
     else {
-      board[row][col].addToken(player.token);
+      board[row][col].addToken(player);
     }
-    console.log(availableCells);
   };
 
-  return { getBoard, placeToken };
+  const printBoard = () => {
+    const boardwithCells = board.map((row) =>
+      row.map((cell) => cell.getValue())
+    );
+    console.log(boardwithCells);
+  };
+
+  return { getBoard, placeToken, printBoard };
 })();
 
 function Cell(row, col) {
@@ -35,3 +42,5 @@ function Cell(row, col) {
 
   return { getValue, addToken, getPosition };
 }
+
+gameBoard.placeToken(0, 0, 'x');

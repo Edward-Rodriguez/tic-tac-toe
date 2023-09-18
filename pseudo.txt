@@ -1,0 +1,54 @@
+TicTacToe
+
+const gameBoard - module
+    board variable - 2d array
+    size of boars = 3 rows, 3 columns
+    iterate through board with nested loop
+        populate each cell with 'Cell' 
+    const getBoard = () => return board
+    const placeToken =(row, col, player) => 
+        const availableCells = board.filter unoccupied availableCells
+        if size of availableCells = 0 return
+        else board[row][col].addToken(player.token)
+            board[row][col].setPosition(row, col)
+    return {getBoard, placeToken}
+
+    
+function Cell() - factory
+    let value = null
+    let row=-1
+    let col=-1
+    function getValue() 
+        return value
+    function addToken(playerToken) 
+        value = playerToken
+    const getPosition =()=> return {row, col}
+    const setPosition =(rowIndex, colIndex) = row = rowIndex, col = columnIndex
+    return {getValue, addToken, getPosition, setPosition}
+
+function Player({name, token}) - factory
+    const {name, token}
+    const getName = () => name
+    const getToken = () => token
+    return {getName, getToken}
+
+const gameController - module
+    const playerOne = Player({'Player One', 'X'})
+    const playerTwo = Player({'Player Two', 'O'})
+    const activePlayer = playerOne
+    const getActivePlayer = () > return activePlayer
+    const switchPlayerTurn =()=>
+        activePlayer = activePlayer === playerOne ? playerTwo : playerOne
+    const playround=(row, col)=>
+        gameBoard.placeToken(row, col, activePlayer)
+        switchPlayerTurn()
+        const playerHasWon =()=>
+            if (hasWinningLine(activePlayer.getToken())) return true;
+
+        const hasWinningLine =(player) => 
+            use loops to check winning rows & columns
+            hardcode winning diagonal lines - check
+            
+    return {playRound, getActivePlayer, playerHasWon}
+    
+function displayController - module

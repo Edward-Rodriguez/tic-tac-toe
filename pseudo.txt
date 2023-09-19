@@ -52,3 +52,5 @@ const gameController - module
     return {playRound, getActivePlayer, playerHasWon}
     
 function displayController - module
+    const game = gameController
+    

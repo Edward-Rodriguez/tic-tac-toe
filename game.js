@@ -1,5 +1,6 @@
 const gameBoard = (() => {
   const board = [];
+
   for (let row = 0; row < 3; row++) {
     board[row] = [];
     for (let col = 0; col < 3; col++) {
@@ -10,14 +11,15 @@ const gameBoard = (() => {
   const getBoard = () => board;
 
   const placeToken = (row, col, player) => {
-    const availableCells = board
-      .flat()
-      .filter((cell) => cell.getValue() === null);
-    if (availableCells.length === 0 || board[row][col].getValue() !== null)
+    if (availableCellsCount() === 0 || board[row][col].getValue() !== null)
       return;
     else {
       board[row][col].addToken(player.getToken());
     }
+  };
+
+  const availableCellsCount = () => {
+    return board.flat().filter((cell) => cell.getValue() === null).length;
   };
 
   const printBoard = () => {
@@ -40,7 +42,7 @@ function Cell(row, col) {
     row, col;
   };
 
-  return { getValue, addToken, getPosition };
+  return { getValue, addToken, getPosition, availableCellsCount };
 }
 
 function Player(name, token) {
@@ -75,7 +77,7 @@ const gameController = (() => {
           }
         }
         if (winningLine) return true;
-        // check winning columns instead
+        // reset loop, check winning columns instead
         if (row === 2 && columnFlag === false) {
           columnFlag = true;
           row = -1;
@@ -98,7 +100,9 @@ const gameController = (() => {
     };
     playerHasWon()
       ? console.log(activePlayer.getName, 'is the winner')
-      : console.log(`no winner yet, other players turn`);
+      : gameBoard.availableCellsCount() === 0
+      ? console.log(`Game is tied`)
+      : console.log(`No winner yet, other players turn`);
   };
 
   return { getActivePlayer, playRound };

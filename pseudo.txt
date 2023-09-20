@@ -52,5 +52,27 @@ const gameController - module
     return {playRound, getActivePlayer, playerHasWon}
     
 function displayController - module
-    const game = gameController
-    
+    const playerTurnDiv = queryselector('#player-turn-msg')
+    const boardDiv = queryselector(.board)
+    playerTurnDiv.textContent = `${gameController.getActivePlayer().name}'s turn...`
+    function updateScreen
+        gameController.board.foreach
+            const cellButton = create
+            cellButton add classlist 'cell'
+            cellButton add attributes data-row (cellButton.dataset.row)
+                data-row value = cell.getPosition().row
+            cellButton add attributes data-col
+                data-col value = cell.getPosition().col
+            cellButton.textContent = cell.getValue()
+            boardDiv.appenChild(cellButton)
+
+    function clickHandlerBoard(event)
+        const selectedCell = event.target;
+        if selectedCell
+            gameController.playRound(selectedCell.dataset.row, selectedCell.dataset.col)
+            updateScreen();
+
+    boardDiv.addEventlistener('click', e=>clickHandlerBoard(e))
+        
+
+

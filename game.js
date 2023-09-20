@@ -54,13 +54,14 @@ function Player(name, token) {
 
 const gameController = (() => {
   const playerOne = Player('Player One', 'X');
-  const playerTwo = Player('Player Two', '0');
-  const activePlayer = playerOne;
+  const playerTwo = Player('Player Two', 'O');
+  let activePlayer = playerOne;
   const board = gameBoard.getBoard();
   const getBoard = () => board;
   const getActivePlayer = () => activePlayer;
   const switchPlayerTurn = () =>
-    activePlayer === playerOne ? playerTwo : playerOne;
+    (activePlayer = activePlayer === playerOne ? playerTwo : playerOne);
+
   const playRound = (row, col) => {
     gameBoard.placeToken(row, col, activePlayer);
 
@@ -100,11 +101,14 @@ const gameController = (() => {
         ? true
         : false;
     };
+    // playerHasWon()
+    //   ? console.log(activePlayer.getName, 'is the winner')
+    //   : gameBoard.availableCellsCount() === 0
+    //   ? console.log(`Game is tied`)
+    //   : console.log(`No winner yet, other players turn`);
     playerHasWon()
       ? console.log(activePlayer.getName, 'is the winner')
-      : gameBoard.availableCellsCount() === 0
-      ? console.log(`Game is tied`)
-      : console.log(`No winner yet, other players turn`);
+      : switchPlayerTurn();
   };
 
   return { getActivePlayer, playRound, getBoard };
@@ -147,6 +151,4 @@ const displayController = (() => {
 })();
 
 gameController.playRound(0, 2);
-gameController.playRound(1, 2);
-gameController.playRound(2, 2);
 displayController.updateScreen();

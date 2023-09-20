@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="css/style.css" />
-    <script src="game.js"></script>
+    <script src="game.js" defer></script>
 </head>
 
 <body>
@@ -17,13 +17,13 @@
         <main>
             <div class="board">
             </div>
-            <div class="player-turn">
+            <div class="player-info">
                 <div class="player-one">
                     <img src="images/playerone.svg" alt="" />
                     <span class="token">X</span>
                     <p class="player-name">Player 1</p>
                 </div>
-                <p id="player-turn-msg">Player 1's turn</p>
+                <div id="player-turn">Player 1's turn</div>
                 <div class="player-two">
                     <img src="images/playertwo.svg" alt="" />
                     <span class="token">O</span>

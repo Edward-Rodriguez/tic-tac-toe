@@ -29,7 +29,7 @@ const gameBoard = (() => {
     console.log(boardwithCells);
   };
 
-  return { getBoard, placeToken, printBoard };
+  return { getBoard, placeToken, printBoard, availableCellsCount };
 })();
 
 function Cell(row, col) {
@@ -38,11 +38,12 @@ function Cell(row, col) {
   const addToken = (playerToken) => {
     value = playerToken;
   };
-  const getPosition = () => {
-    row, col;
-  };
+  const getPosition = () => ({
+    row,
+    col,
+  });
 
-  return { getValue, addToken, getPosition, availableCellsCount };
+  return { getValue, addToken, getPosition };
 }
 
 function Player(name, token) {
@@ -55,6 +56,8 @@ const gameController = (() => {
   const playerOne = Player('Player One', 'X');
   const playerTwo = Player('Player Two', '0');
   const activePlayer = playerOne;
+  const board = gameBoard.getBoard();
+  const getBoard = () => board;
   const getActivePlayer = () => activePlayer;
   const switchPlayerTurn = () =>
     activePlayer === playerOne ? playerTwo : playerOne;
@@ -63,7 +66,6 @@ const gameController = (() => {
 
     const playerHasWon = () => {
       gameBoard.printBoard();
-      let board = gameBoard.getBoard();
       let columnFlag = false;
 
       // when columnFlag = true, check winning cols instead
@@ -105,9 +107,46 @@ const gameController = (() => {
       : console.log(`No winner yet, other players turn`);
   };
 
-  return { getActivePlayer, playRound };
+  return { getActivePlayer, playRound, getBoard };
+})();
+
+const displayController = (() => {
+  const playerTurnDiv = document.querySelector('#player-turn');
+  const boardDiv = document.querySelector('.board');
+  playerTurnDiv.textContent = `${
+    gameController.getActivePlayer().name
+  }'s turn..`;
+
+  function updateScreen() {
+    boardDiv.textContent = '';
+    gameController.getBoard().forEach((row) =>
+      row.forEach((cell) => {
+        const cellButton = document.createElement('button');
+        cellButton.classList.add('cell');
+        cellButton.dataset.row = cell.getPosition().row;
+        cellButton.dataset.col = cell.getPosition().col;
+        cellButton.textContent = cell.getValue();
+        boardDiv.appendChild(cellButton);
+      })
+    );
+  }
+
+  function clickHandlerBoard(ev) {
+    const selectedCell = ev.target;
+    if (selectedCell.dataset.row) {
+      gameController.playRound(
+        selectedCell.dataset.row,
+        selectedCell.dataset.col
+      );
+      updateScreen();
+    }
+  }
+
+  boardDiv.addEventListener('click', (ev) => clickHandlerBoard(ev));
+  return { updateScreen };
 })();
 
 gameController.playRound(0, 2);
 gameController.playRound(1, 2);
 gameController.playRound(2, 2);
+displayController.updateScreen();

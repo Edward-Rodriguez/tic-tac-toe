@@ -97,7 +97,6 @@ const gameController = (() => {
 
     if (playerHasWon()) {
       gameOver = true;
-      tieGame = false;
     } else if (gameBoard.availableCellsCount() === 0) {
       gameOver = true;
       tieGame = true;
@@ -132,7 +131,7 @@ const displayController = (() => {
 
   function clickHandlerBoard(ev) {
     const selectedCell = ev.target;
-    if (selectedCell.dataset.row) {
+    if (selectedCell.dataset.row && !selectedCell.textContent) {
       gameController.playRound(
         selectedCell.dataset.row,
         selectedCell.dataset.col

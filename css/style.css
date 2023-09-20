@@ -47,12 +47,15 @@ main {
     repeat(3, minmax(150px, 250px));
   /* padding: 64px; */
   gap: 8px;
+  background-color: lightgray;
+  border-radius: 8px;
 }
 
 .cell {
   cursor: pointer;
   border: none;
   font-size: 96px;
+  background-color: rgb(250, 250, 250);
 }
 
 .player-info {

@@ -1,15 +1,12 @@
 const gameBoard = (() => {
   const board = [];
-
   for (let row = 0; row < 3; row++) {
     board[row] = [];
     for (let col = 0; col < 3; col++) {
       board[row][col] = Cell(row, col);
     }
   }
-
   const getBoard = () => board;
-
   const placeToken = (row, col, player) => {
     if (availableCellsCount() === 0 || board[row][col].getValue() !== null)
       return;
@@ -17,18 +14,15 @@ const gameBoard = (() => {
       board[row][col].addToken(player.getToken());
     }
   };
-
   const availableCellsCount = () => {
     return board.flat().filter((cell) => cell.getValue() === null).length;
   };
-
   const printBoard = () => {
     const boardwithCells = board.map((row) =>
       row.map((cell) => cell.getValue())
     );
     console.log(boardwithCells);
   };
-
   return { getBoard, placeToken, printBoard, availableCellsCount };
 })();
 
@@ -42,7 +36,6 @@ function Cell(row, col) {
     row,
     col,
   });
-
   return { getValue, addToken, getPosition };
 }
 
@@ -53,8 +46,8 @@ function Player(name, token) {
 }
 
 const gameController = (() => {
-  const playerOne = Player('Player One', 'X');
-  const playerTwo = Player('Player Two', 'O');
+  const playerOne = Player('Player 1', 'X');
+  const playerTwo = Player('Player 2', 'O');
   let activePlayer = playerOne;
   const getActivePlayer = () => activePlayer;
   const switchPlayerTurn = () =>
@@ -63,7 +56,6 @@ const gameController = (() => {
   let gameOver = false;
   let tieGame = false;
   const getResult = () => ({ gameOver, tieGame });
-
   const playRound = (row, col) => {
     gameBoard.placeToken(row, col, activePlayer);
     let board = gameBoard.getBoard();
@@ -117,12 +109,13 @@ const gameController = (() => {
 const displayController = (() => {
   const playerTurnDiv = document.querySelector('#player-turn');
   const boardDiv = document.querySelector('.board');
-  playerTurnDiv.textContent = `${
-    gameController.getActivePlayer().name
-  }'s turn..`;
 
   function updateScreen() {
     boardDiv.textContent = '';
+    playerTurnDiv.textContent = `${gameController
+      .getActivePlayer()
+      .getName()}'s turn..`;
+
     gameBoard.getBoard().forEach((row) =>
       row.forEach((cell) => {
         const cellButton = document.createElement('button');
@@ -145,9 +138,9 @@ const displayController = (() => {
       updateScreen();
       // check game result
       if (gameController.getResult().gameOver) {
-        playerTurnDiv.textContent = `${
-          gameController.getActivePlayer().name
-        } is the Winner!`;
+        playerTurnDiv.textContent = `${gameController
+          .getActivePlayer()
+          .getName()} is the Winner!`;
       } else if (gameController.getResult().tieGame) {
         playerTurnDiv.textContent = 'Tie game..';
       }

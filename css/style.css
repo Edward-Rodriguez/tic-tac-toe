@@ -32,6 +32,8 @@ body {
 
 header {
   grid-area: header;
+  font-size: 2rem;
+  padding: 16px;
 }
 
 main {
@@ -51,6 +53,43 @@ main {
   cursor: pointer;
   border: none;
   font-size: 96px;
+}
+
+.player-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player {
+  display: grid;
+  grid-template-rows: 2fr 1fr 1fr;
+  grid-template-areas:
+    'avatar'
+    'name'
+    'token';
+  place-items: center;
+  font-size: 48px;
+}
+
+.player img {
+  grid-area: avatar;
+  width: 150px;
+  height: auto;
+}
+
+.player .token {
+  grid-area: token;
+}
+
+.player .player-name {
+  grid-area: name;
+}
+
+#player-turn {
+  font-size: 2rem;
+  align-self: start;
+  padding-top: 64px;
 }
 
 footer {

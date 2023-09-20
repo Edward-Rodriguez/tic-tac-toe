@@ -56,19 +56,20 @@ const gameController = (() => {
   const playerOne = Player('Player One', 'X');
   const playerTwo = Player('Player Two', 'O');
   let activePlayer = playerOne;
-  const board = gameBoard.getBoard();
-  const getBoard = () => board;
   const getActivePlayer = () => activePlayer;
   const switchPlayerTurn = () =>
     (activePlayer = activePlayer === playerOne ? playerTwo : playerOne);
 
+  let gameOver = false;
+  let tieGame = false;
+  const getResult = () => ({ gameOver, tieGame });
+
   const playRound = (row, col) => {
     gameBoard.placeToken(row, col, activePlayer);
+    let board = gameBoard.getBoard();
 
     const playerHasWon = () => {
-      gameBoard.printBoard();
       let columnFlag = false;
-
       // when columnFlag = true, check winning cols instead
       for (let row = 0; row < 3; row++) {
         let winningLine = true;
@@ -101,17 +102,16 @@ const gameController = (() => {
         ? true
         : false;
     };
-    // playerHasWon()
-    //   ? console.log(activePlayer.getName, 'is the winner')
-    //   : gameBoard.availableCellsCount() === 0
-    //   ? console.log(`Game is tied`)
-    //   : console.log(`No winner yet, other players turn`);
-    playerHasWon()
-      ? console.log(activePlayer.getName, 'is the winner')
-      : switchPlayerTurn();
+
+    if (playerHasWon()) {
+      gameOver = true;
+      tieGame = false;
+    } else if (gameBoard.availableCellsCount() === 0) {
+      tieGame = true;
+    } else switchPlayerTurn();
   };
 
-  return { getActivePlayer, playRound, getBoard };
+  return { getActivePlayer, playRound, getResult };
 })();
 
 const displayController = (() => {
@@ -123,7 +123,7 @@ const displayController = (() => {
 
   function updateScreen() {
     boardDiv.textContent = '';
-    gameController.getBoard().forEach((row) =>
+    gameBoard.getBoard().forEach((row) =>
       row.forEach((cell) => {
         const cellButton = document.createElement('button');
         cellButton.classList.add('cell');
@@ -143,6 +143,14 @@ const displayController = (() => {
         selectedCell.dataset.col
       );
       updateScreen();
+      // check game result
+      if (gameController.getResult().gameOver) {
+        playerTurnDiv.textContent = `${
+          gameController.getActivePlayer().name
+        } is the Winner!`;
+      } else if (gameController.getResult().tieGame) {
+        playerTurnDiv.textContent = 'Tie game..';
+      }
     }
   }
 

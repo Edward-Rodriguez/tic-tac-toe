@@ -99,6 +99,7 @@ const gameController = (() => {
       gameOver = true;
       tieGame = false;
     } else if (gameBoard.availableCellsCount() === 0) {
+      gameOver = true;
       tieGame = true;
     } else switchPlayerTurn();
   };
@@ -120,6 +121,7 @@ const displayController = (() => {
       row.forEach((cell) => {
         const cellButton = document.createElement('button');
         cellButton.classList.add('cell');
+        cellButton.classList.add(`${cell.getValue()}-token`);
         cellButton.dataset.row = cell.getPosition().row;
         cellButton.dataset.col = cell.getPosition().col;
         cellButton.textContent = cell.getValue();
@@ -136,13 +138,18 @@ const displayController = (() => {
         selectedCell.dataset.col
       );
       updateScreen();
-      // check game result
+      // check if game is over
       if (gameController.getResult().gameOver) {
-        playerTurnDiv.textContent = `${gameController
-          .getActivePlayer()
-          .getName()} is the Winner!`;
-      } else if (gameController.getResult().tieGame) {
-        playerTurnDiv.textContent = 'Tie game..';
+        if (gameController.getResult().tieGame) {
+          playerTurnDiv.textContent = 'Tie game..';
+        } else {
+          playerTurnDiv.textContent = `${gameController
+            .getActivePlayer()
+            .getName()} is the Winner!`;
+        }
+        document
+          .querySelectorAll('.cell')
+          .forEach((button) => button.setAttribute('disabled', true));
       }
     }
   }
@@ -151,5 +158,4 @@ const displayController = (() => {
   return { updateScreen };
 })();
 
-gameController.playRound(0, 2);
 displayController.updateScreen();

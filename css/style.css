@@ -92,6 +92,14 @@ main {
   padding-top: 64px;
 }
 
+.O-token {
+  color: #be5b41;
+}
+
+.X-token {
+  color: #41a4be;
+}
+
 footer {
   grid-area: footer;
   display: flex;

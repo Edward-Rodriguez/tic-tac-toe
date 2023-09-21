@@ -6,7 +6,9 @@ const gameBoard = (() => {
       board[row][col] = Cell(row, col);
     }
   }
+
   const getBoard = () => board;
+
   const placeToken = (row, col, player) => {
     if (availableCellsCount() === 0 || board[row][col].getValue() !== null)
       return;
@@ -14,16 +16,27 @@ const gameBoard = (() => {
       board[row][col].addToken(player.getToken());
     }
   };
+
   const availableCellsCount = () => {
     return board.flat().filter((cell) => cell.getValue() === null).length;
   };
+
   const printBoard = () => {
     const boardwithCells = board.map((row) =>
       row.map((cell) => cell.getValue())
     );
     console.log(boardwithCells);
   };
-  return { getBoard, placeToken, printBoard, availableCellsCount };
+
+  const resetBoard = () => {
+    board.forEach((row) =>
+      row.map((cell) => {
+        cell.addToken(null);
+      })
+    );
+  };
+
+  return { getBoard, placeToken, printBoard, availableCellsCount, resetBoard };
 })();
 
 function Cell(row, col) {
@@ -36,12 +49,14 @@ function Cell(row, col) {
     row,
     col,
   });
+
   return { getValue, addToken, getPosition };
 }
 
 function Player(name, token) {
   const getName = () => name;
   const getToken = () => token;
+  // const setToken = (newToken) => (token = newToken);
   return { getName, getToken };
 }
 
@@ -49,19 +64,23 @@ const gameController = (() => {
   const playerOne = Player('Player 1', 'X');
   const playerTwo = Player('Player 2', 'O');
   let activePlayer = playerOne;
+  let gameOver = false;
+  let tieGame = false;
+
   const getActivePlayer = () => activePlayer;
+
   const switchPlayerTurn = () =>
     (activePlayer = activePlayer === playerOne ? playerTwo : playerOne);
 
-  let gameOver = false;
-  let tieGame = false;
   const getResult = () => ({ gameOver, tieGame });
+
   const playRound = (row, col) => {
     gameBoard.placeToken(row, col, activePlayer);
     let board = gameBoard.getBoard();
 
     const playerHasWon = () => {
       let columnFlag = false;
+
       // when columnFlag = true, check winning cols instead
       for (let row = 0; row < 3; row++) {
         let winningLine = true;
@@ -79,7 +98,6 @@ const gameController = (() => {
           row = -1;
         }
       }
-
       //check diaganol lines
       return [
         board[0][0].getValue(),
@@ -103,12 +121,20 @@ const gameController = (() => {
     } else switchPlayerTurn();
   };
 
-  return { getActivePlayer, playRound, getResult };
+  const resetGame = () => {
+    gameOver = false;
+    tieGame = false;
+    activePlayer = playerOne;
+    gameBoard.resetBoard();
+  };
+
+  return { getActivePlayer, playRound, getResult, resetGame };
 })();
 
 const displayController = (() => {
   const playerTurnDiv = document.querySelector('#player-turn');
   const boardDiv = document.querySelector('.board');
+  const playAgainBtn = document.querySelector('#play-again-btn');
 
   function updateScreen() {
     boardDiv.textContent = '';
@@ -149,11 +175,19 @@ const displayController = (() => {
         document
           .querySelectorAll('.cell')
           .forEach((button) => button.setAttribute('disabled', true));
+        playAgainBtn.style.visibility = 'visible';
       }
     }
   }
 
+  function clickHandlerPlayAgainBtn() {
+    gameController.resetGame();
+    playAgainBtn.style.visibility = 'hidden';
+    updateScreen();
+  }
+
   boardDiv.addEventListener('click', (ev) => clickHandlerBoard(ev));
+  playAgainBtn.addEventListener('click', clickHandlerPlayAgainBtn);
   return { updateScreen };
 })();
 
